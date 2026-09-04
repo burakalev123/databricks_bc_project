@@ -1,41 +1,98 @@
 # databricks_bc_project
 
-A hands-on learning and portfolio project focused on building practical Databricks skills from a Data Architect's perspective.
+A small, hands-on Databricks learning and portfolio project built from a Data Architect's perspective.
 
-## About the project
+## Overview
 
-This repository is my personal Databricks learning lab. It is intended to document small, practical experiments and gradually bring them together into a clear end-to-end data platform example.
+This repository demonstrates a compact end-to-end data pipeline using native Databricks SQL notebooks, Delta tables, a Bronze/Silver/Gold architecture, Databricks Workflows, Unity Catalog-ready configuration, automated quality checks, Git, and bundle-based deployment.
 
-The emphasis is on understanding not only how individual Databricks features work, but also how they fit into maintainable data architecture and delivery practices.
+The project intentionally stays small and understandable. It is a learning lab rather than a production framework, but its structure follows practices that can grow into a larger solution.
+
+## Architecture
+
+```text
+Sample customer records
+        |
+        v
+Bronze: raw Delta table
+        |
+        v
+Silver: standardized and deduplicated customers
+        |
+        v
+Gold: customer summary by country
+        |
+        v
+Automated data quality checks
+```
+
+More detail is available in [docs/architecture.md](docs/architecture.md).
+
+## Repository structure
+
+```text
+.
+├── databricks.yml
+├── resources/
+│   └── databricks_job.yml
+├── src/
+│   └── notebooks/
+│       ├── 01_bronze_ingestion.sql
+│       ├── 02_silver_transformation.sql
+│       └── 03_gold_customer_summary.sql
+├── tests/
+│   └── test_customer_quality.py
+├── docs/
+│   └── architecture.md
+├── .editorconfig
+└── .gitignore
+```
+
+## What the pipeline does
+
+1. Creates a Bronze Delta table with a small inline customer dataset.
+2. Standardizes values and deduplicates customers in the Silver layer.
+3. Builds a country-level customer summary in the Gold layer.
+4. Runs automated checks for nulls, duplicate emails, empty outputs, and invalid counts.
+
+The inline dataset keeps the first version self-contained. It can later be replaced with Auto Loader, files in a Unity Catalog volume, or another source.
+
+## Prerequisites
+
+- Access to a Databricks workspace
+- A Unity Catalog catalog where you can create a schema and tables
+- Databricks CLI configured for the workspace
+- An existing Databricks cluster
+
+The SQL notebooks use named parameter markers for widgets, which require Databricks Runtime 15.2 or later.
+
+## Validate and run
+
+From the repository root, replace the placeholders with values from your workspace:
+
+```bash
+databricks bundle validate --var="cluster_id=<cluster-id>,catalog=<catalog>,schema=<schema>"
+databricks bundle deploy --var="cluster_id=<cluster-id>,catalog=<catalog>,schema=<schema>"
+databricks bundle run customer_pipeline --var="cluster_id=<cluster-id>,catalog=<catalog>,schema=<schema>"
+```
+
+The default target is `dev`. Use `-t prod` only when you intentionally want to exercise the production-mode configuration.
 
 ## Learning roadmap
 
-The project will evolve over time to cover:
+Future iterations may add:
 
-- Native Databricks development with SQL and notebooks
-- Medallion/layered architecture using Bronze, Silver, and Gold layers
-- Data ingestion, transformation, and orchestration with Databricks Workflows
-- Data governance and organization with Unity Catalog
-- Testing, data quality checks, and validation practices
-- Git-based version control and collaborative development habits
-- Deployment and environment-promotion practices
-
-## Planned approach
-
-Examples will be added in small, understandable steps rather than as a production-ready enterprise framework. Each addition should demonstrate a specific concept, explain the architectural reasoning behind it, and remain easy to explore.
-
-A typical flow may include:
-
-1. Ingesting source data into the Bronze layer
-2. Cleaning and standardizing records in the Silver layer
-3. Creating business-ready datasets in the Gold layer
-4. Orchestrating the pipeline with a workflow
-5. Adding quality checks, governance, and deployment practices
+- File ingestion with Auto Loader and Unity Catalog volumes
+- Incremental processing and idempotent merge patterns
+- Stronger schema and data quality expectations
+- CI checks for bundle validation and tests
+- Separate development and production identities
+- Dashboards or downstream consumption examples
 
 ## Project status
 
-This project is at an early stage and will grow as I progress through the Databricks learning journey.
+The initial project skeleton and a runnable learning pipeline are in place. The repository will evolve as new Databricks concepts are explored.
 
 ## Disclaimer
 
-This is a personal learning and portfolio repository. It is not a production system, and its structure will evolve as new concepts and practices are explored.
+This is a personal learning and portfolio repository, not a production system.
