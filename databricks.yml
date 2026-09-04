@@ -1,0 +1,28 @@
+bundle:
+  name: databricks_bc_project
+
+include:
+  - resources/*.yml
+
+variables:
+  catalog:
+    description: Unity Catalog catalog used by the learning pipeline
+    default: workspace
+  schema:
+    description: Schema used by the learning pipeline
+    default: databricks_bc_project
+
+targets:
+  dev:
+    default: true
+    mode: development
+    workspace:
+      root_path: ~/.bundle/${bundle.name}/${bundle.target}
+
+  prod:
+    mode: production
+    workspace:
+      root_path: /Workspace/Shared/.bundle/${bundle.name}/${bundle.target}
+    permissions:
+      - user_name: ${workspace.current_user.userName}
+        level: CAN_MANAGE
