@@ -1,0 +1,19 @@
+# Databricks local state
+.databricks/
+bundle/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# IDE and OS
+.idea/
+.vscode/
+.DS_Store
+
+# Local configuration and secrets
+.env
+*.local.yml
