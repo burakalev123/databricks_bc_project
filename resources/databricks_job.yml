@@ -5,6 +5,7 @@ resources:
 
       tasks:
         - task_key: bronze_ingestion
+          existing_cluster_id: ${var.cluster_id}
           notebook_task:
             notebook_path: ../src/notebooks/01_bronze_ingestion.sql
             base_parameters:
@@ -12,6 +13,7 @@ resources:
               schema: ${var.schema}
 
         - task_key: silver_transformation
+          existing_cluster_id: ${var.cluster_id}
           depends_on:
             - task_key: bronze_ingestion
           notebook_task:
@@ -21,6 +23,7 @@ resources:
               schema: ${var.schema}
 
         - task_key: gold_customer_summary
+          existing_cluster_id: ${var.cluster_id}
           depends_on:
             - task_key: silver_transformation
           notebook_task:
@@ -30,6 +33,7 @@ resources:
               schema: ${var.schema}
 
         - task_key: data_quality_checks
+          existing_cluster_id: ${var.cluster_id}
           depends_on:
             - task_key: gold_customer_summary
           notebook_task:
