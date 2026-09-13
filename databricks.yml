@@ -34,4 +34,5 @@ targets:
     default: true
     mode: development
     workspace:
+      host: https://dbc-180af7ad-5645.cloud.databricks.com
       root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
