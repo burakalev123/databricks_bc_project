@@ -46,7 +46,7 @@ Lakeflow derives dependencies from the dataset queries. Integrity checks are a s
 
 ## Decisions still open
 
-- Upload the initial CSV files to `/Volumes/ldp_example/10_bronze/sales_source` (Volume created; files not yet uploaded).
+- Upload the remaining products, orders, and order_items CSVs to `/Volumes/ldp_example/10_bronze/sales_source` (Volume and verified customers CSV are ready).
 - Workspace access and a real Databricks validation/run.
 - Future lessons: intentional quality-error batches, CDC, and scheduling.
 

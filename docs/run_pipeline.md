@@ -27,7 +27,7 @@ The managed Volume `ldp_example.10_bronze.sales_source` has been created and ver
 CREATE VOLUME IF NOT EXISTS `ldp_example`.`10_bronze`.`sales_source`;
 ```
 
-The Volume stores input files separately from pipeline tables. You can use another existing Volume by overriding `source_path`. The bundle does not create or upload to the Volume automatically. The four CSVs have not yet been uploaded.
+The Volume stores input files separately from pipeline tables. You can use another existing Volume by overriding `source_path`. The bundle does not create or upload to the Volume automatically. `customers/customers.csv` has been uploaded and verified byte-for-byte (100 records). Products, orders, and order items still need uploading.
 
 ## 2. Authenticate and configure the bundle
 
@@ -53,14 +53,14 @@ Override them only when deliberately targeting another location, using the corre
 
 ## 3. Upload the initial files
 
-Run this once against a fresh source directory. Each entity needs its own subdirectory because the CSV schemas differ:
+The customer CSV is already uploaded. To upload the remaining three files, run the following once. Each entity needs its own subdirectory because the CSV schemas differ:
 
 ```bash
 set -e
-for entity in customers products orders order_items; do
+for entity in products orders order_items; do
   databricks fs mkdir "dbfs:${BUNDLE_VAR_source_path}/${entity}"
   databricks fs cp "data/sample/${entity}.csv" \
-    "dbfs:${BUNDLE_VAR_source_path}/${entity}/initial.csv"
+    "dbfs:${BUNDLE_VAR_source_path}/${entity}/${entity}.csv"
 done
 ```
 
@@ -104,7 +104,7 @@ Use Configuration with the existing `${sales.*}` SQL syntax; this example does n
 ## Refresh behavior
 
 - Bronze uses Auto Loader checkpoints managed by Lakeflow. Normal refreshes discover new files; they do not reload previously processed files.
-- Source files are immutable. For this initial example, do not overwrite `initial.csv` after ingestion. A normal refresh will not apply edits to a previously processed file.
+- Source files are immutable. For this initial example, do not overwrite the uploaded CSVs after ingestion. A normal refresh will not apply edits to a previously processed file.
 - New files can add new keys or repeat identical records. Silver removes identical normalized rows. Different records with the same key are rejected by integrity checks; this example does not implement CDC or “latest record wins.”
 - Upload a complete, consistent batch before starting an update. Orders with missing customers, products, or lines cause integrity checks to fail.
 - A full refresh rebuilds Bronze and downstream datasets from the retained source files. Keep those files available and use full refresh intentionally when resetting the learning dataset.
