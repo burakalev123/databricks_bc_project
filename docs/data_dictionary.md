@@ -57,6 +57,7 @@ Each order has 1–4 lines with distinct products. All foreign keys resolve. Tra
 - Sales revenue includes only `COMPLETED` orders; `CANCELLED` and `PENDING` remain available for status analysis.
 - Sum rounded line amounts for order and reporting totals.
 - All amounts use EUR; tax, shipping, refunds, returns, and currency conversion are outside this first example.
-- Suggested Gold outputs: daily sales, sales by product/category, and customer sales totals. These outputs are planned, not implemented.
+- Gold outputs: completed sales lines, daily sales by channel, product sales with category, and customer sales with country. Each aggregate retains currency.
+- Product-level distinct order counts are not additive across products because one order can contain multiple products.
 
 The initial data contains no deliberately invalid or duplicate keys. Dedicated quality-error and incremental batches can be added when implementing those lessons.

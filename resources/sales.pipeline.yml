@@ -1,0 +1,21 @@
+resources:
+  pipelines:
+    sales_pipeline:
+      name: sales-medallion-ldp
+      catalog: ${var.catalog}
+      schema: ${var.bronze_schema}
+      serverless: true
+      continuous: false
+      channel: CURRENT
+      edition: ADVANCED
+      root_path: ../src/pipelines
+      libraries:
+        - glob:
+            include: ../src/pipelines/**
+      configuration:
+        sales.catalog: ${var.catalog}
+        sales.bronze_schema: ${var.bronze_schema}
+        sales.silver_schema: ${var.silver_schema}
+        sales.gold_schema: ${var.gold_schema}
+        sales.source_path: ${var.source_path}
+        spark.sql.session.timeZone: UTC

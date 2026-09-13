@@ -1,0 +1,36 @@
+bundle:
+  name: sales_ldp
+
+include:
+  - resources/*.pipeline.yml
+
+variables:
+  catalog:
+    description: Existing Unity Catalog catalog for the pipeline outputs
+    default: ldp_example
+  bronze_schema:
+    description: Bronze schema
+    default: 10_bronze
+  silver_schema:
+    description: Silver schema
+    default: 20_silver
+  gold_schema:
+    description: Gold schema
+    default: 30_gold
+  source_path:
+    description: Source Volume directory containing customers, products, orders, and order_items subdirectories
+
+sync:
+  exclude:
+    - data/**
+    - tests/**
+    - scripts/**
+    - docs/**
+    - requirements-dev.txt
+
+targets:
+  dev:
+    default: true
+    mode: development
+    workspace:
+      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}

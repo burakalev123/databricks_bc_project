@@ -4,7 +4,7 @@ A from-scratch sales learning project for **Lakeflow Spark Declarative Pipelines
 
 ## Status
 
-The folder structure and synthetic sales source data are ready. Pipeline SQL, deployment configuration, and runtime tests will be added step by step. Nothing has been deployed or run in Databricks.
+The SQL pipeline, development bundle, synthetic sales data, and local logic tests are implemented. The pipeline defines 4 Bronze streaming tables, 4 Silver business materialized views, 1 Silver integrity-check materialized view, and 4 Gold materialized views. Local tests pass; deployment and execution in Databricks are not yet verified.
 
 ## Data flow
 
@@ -25,23 +25,35 @@ Pipeline datasets will declare their dependencies; Lakeflow will manage their ex
 src/pipelines/bronze/   Bronze dataset definitions
 src/pipelines/silver/   Silver dataset definitions
 src/pipelines/gold/     Gold dataset definitions
-resources/             Future pipeline deployment resources
+databricks.yml         Bundle variables and development target
+resources/             Sales LDP deployment definition
 data/sample/           Synthetic sales CSV files
 scripts/               Sample data generator
-tests/                 Future validation checks
+tests/                 Local SQL logic and data quality tests
 docs/architecture.md   Architecture and open decisions
+docs/run_pipeline.md   Setup, upload, deploy, and run instructions
 ```
 
-## Next steps
+## Run the pipeline
 
-1. Review the [sales dataset and source schemas](docs/data_dictionary.md).
-2. Select the Databricks catalog, schemas, and source volume.
-3. Implement and validate Bronze ingestion.
-4. Add Silver transformations and quality expectations.
-5. Add Gold outputs and validate business results.
-6. Configure deployment and run the pipeline in Databricks.
+The catalog defaults to `ldp_example`, with `10_bronze`, `20_silver`, and `30_gold` schemas. Follow [the setup and deployment guide](docs/run_pipeline.md) to create the schemas, configure a source Volume, and upload the four CSVs. Once authenticated and configured:
 
-There are no runnable deployment commands yet. The previous notebook example has been removed from the working tree; Git history is unchanged.
+```bash
+databricks bundle validate -t dev
+databricks bundle deploy -t dev
+databricks bundle run -t dev --validate-only sales_pipeline
+databricks bundle run -t dev sales_pipeline
+```
+
+The guide also covers creating the pipeline directly from a Databricks Git folder. For local checks:
+
+```bash
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements-dev.txt
+.venv/bin/python -m unittest discover -s tests -v
+```
+
+The previous notebook-based Job example has been replaced by declarative dataset definitions. Lakeflow derives execution order from table references. Each layer writes to its own schema in `ldp_example`; existing `bronze_`, `silver_`, and `gold_` table prefixes are retained. All dataset definitions and reads use fully qualified names.
 
 ## Sample data
 

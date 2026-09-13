@@ -1,0 +1,4 @@
+# Local SQL logic tests only; no dependencies are installed on the SQL pipeline.
+duckdb==1.4.5
+PyYAML==6.0.3
+sqlglot==30.18.0
