@@ -21,13 +21,13 @@ CREATE SCHEMA IF NOT EXISTS `ldp_example`.`20_silver`;
 CREATE SCHEMA IF NOT EXISTS `ldp_example`.`30_gold`;
 ```
 
-The source Volume path is still a required input. For the commands below, an example location is a managed Volume named `sales_source` in the Bronze schema. If using this example, create it separately:
+The managed Volume `ldp_example.10_bronze.sales_source` has been created and verified in the workspace. Its path is now the bundle's `source_path` default. The following idempotent statement documents its setup for a fresh environment:
 
 ```sql
 CREATE VOLUME IF NOT EXISTS `ldp_example`.`10_bronze`.`sales_source`;
 ```
 
-This is a source-storage example, not an additional pipeline table. You can instead use another existing Volume and set `source_path` accordingly. The bundle does not create or upload to the Volume automatically.
+The Volume stores input files separately from pipeline tables. You can use another existing Volume by overriding `source_path`. The bundle does not create or upload to the Volume automatically. The four CSVs have not yet been uploaded.
 
 ## 2. Authenticate and configure the bundle
 
@@ -47,8 +47,9 @@ The bundle already supplies these defaults:
 | `bronze_schema` | `10_bronze` |
 | `silver_schema` | `20_silver` |
 | `gold_schema` | `30_gold` |
+| `source_path` | `/Volumes/ldp_example/10_bronze/sales_source` |
 
-Override them only when deliberately targeting another location, using `BUNDLE_VAR_catalog`, `BUNDLE_VAR_bronze_schema`, `BUNDLE_VAR_silver_schema`, or `BUNDLE_VAR_gold_schema`. The former single `schema` variable is no longer used. `source_path` has no default; the example above assumes you created the example Volume. Reserve these output tables for this pipeline so another deployment does not claim them.
+Override them only when deliberately targeting another location, using the corresponding `BUNDLE_VAR_` environment variable. The former single `schema` variable is no longer used. Reserve these output tables for this pipeline so another deployment does not claim them.
 
 ## 3. Upload the initial files
 

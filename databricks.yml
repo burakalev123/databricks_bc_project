@@ -19,6 +19,7 @@ variables:
     default: 30_gold
   source_path:
     description: Source Volume directory containing customers, products, orders, and order_items subdirectories
+    default: /Volumes/ldp_example/10_bronze/sales_source
 
 sync:
   exclude:
