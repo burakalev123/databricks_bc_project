@@ -1,0 +1,26 @@
+product_id,product_name,category,list_price,currency
+P0001,Wireless Mouse,Electronics,24.90,EUR
+P0002,Keyboard,Electronics,59.90,EUR
+P0003,USB-C Hub,Electronics,39.90,EUR
+P0004,Headphones,Electronics,89.90,EUR
+P0005,Webcam,Electronics,69.90,EUR
+P0006,Notebook,Office,5.90,EUR
+P0007,Pen Set,Office,8.90,EUR
+P0008,Desk Organizer,Office,19.90,EUR
+P0009,Desk Lamp,Office,34.90,EUR
+P0010,Laptop Stand,Office,44.90,EUR
+P0011,Coffee Mug,Home,12.90,EUR
+P0012,Water Bottle,Home,18.90,EUR
+P0013,Storage Box,Home,14.90,EUR
+P0014,Wall Clock,Home,29.90,EUR
+P0015,Cushion,Home,22.90,EUR
+P0016,Yoga Mat,Sports,29.90,EUR
+P0017,Resistance Band,Sports,9.90,EUR
+P0018,Skipping Rope,Sports,11.90,EUR
+P0019,Gym Bag,Sports,39.90,EUR
+P0020,Fitness Towel,Sports,14.90,EUR
+P0021,Backpack,Accessories,54.90,EUR
+P0022,Wallet,Accessories,24.90,EUR
+P0023,Umbrella,Accessories,19.90,EUR
+P0024,Travel Pouch,Accessories,16.90,EUR
+P0025,Laptop Sleeve,Accessories,27.90,EUR

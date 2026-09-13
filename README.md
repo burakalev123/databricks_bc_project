@@ -1,98 +1,68 @@
-# databricks_bc_project
+# Databricks Lakeflow Medallion Project
 
-A small, hands-on Databricks learning and portfolio project built from a Data Architect's perspective.
+A from-scratch sales learning project for **Lakeflow Spark Declarative Pipelines**, following **Medallion Architecture**, with pipeline transformations written in **SQL**.
 
-## Overview
+## Status
 
-This repository demonstrates a compact end-to-end data pipeline using native Databricks SQL notebooks, Delta tables, a Bronze/Silver/Gold architecture, Databricks Workflows, Unity Catalog-ready configuration, automated quality checks, Git, and bundle-based deployment.
+The folder structure and synthetic sales source data are ready. Pipeline SQL, deployment configuration, and runtime tests will be added step by step. Nothing has been deployed or run in Databricks.
 
-The project intentionally stays small and understandable. It is a learning lab rather than a production framework, but its structure follows practices that can grow into a larger solution.
-
-## Architecture
+## Data flow
 
 ```text
-Sample customer records
-        |
-        v
-Bronze: raw Delta table
-        |
-        v
-Silver: standardized and deduplicated customers
-        |
-        v
-Gold: customer summary by country
-        |
-        v
-Automated data quality checks
+Source data → Bronze → Silver → Gold
+             Raw      Clean     Business-ready
 ```
 
-More detail is available in [docs/architecture.md](docs/architecture.md).
+- **Bronze:** ingest source records with minimal transformation and ingestion metadata.
+- **Silver:** apply data types, cleansing, quality rules, and deduplication appropriate to the source.
+- **Gold:** build business-facing facts, dimensions, and aggregates appropriate to the chosen scenario.
 
-## Repository structure
+Pipeline datasets will declare their dependencies; Lakeflow will manage their execution order.
+
+## Structure
 
 ```text
-.
-├── databricks.yml
-├── resources/
-│   └── databricks_job.yml
-├── src/
-│   └── notebooks/
-│       ├── 01_bronze_ingestion.sql
-│       ├── 02_silver_transformation.sql
-│       └── 03_gold_customer_summary.sql
-├── tests/
-│   └── test_customer_quality.py
-├── docs/
-│   └── architecture.md
-├── .editorconfig
-└── .gitignore
+src/pipelines/bronze/   Bronze dataset definitions
+src/pipelines/silver/   Silver dataset definitions
+src/pipelines/gold/     Gold dataset definitions
+resources/             Future pipeline deployment resources
+data/sample/           Synthetic sales CSV files
+scripts/               Sample data generator
+tests/                 Future validation checks
+docs/architecture.md   Architecture and open decisions
 ```
 
-## What the pipeline does
+## Next steps
 
-1. Creates a Bronze Delta table with a small inline customer dataset.
-2. Standardizes values and deduplicates customers in the Silver layer.
-3. Builds a country-level customer summary in the Gold layer.
-4. Runs automated checks for nulls, duplicate emails, empty outputs, and invalid counts.
+1. Review the [sales dataset and source schemas](docs/data_dictionary.md).
+2. Select the Databricks catalog, schemas, and source volume.
+3. Implement and validate Bronze ingestion.
+4. Add Silver transformations and quality expectations.
+5. Add Gold outputs and validate business results.
+6. Configure deployment and run the pipeline in Databricks.
 
-The inline dataset keeps the first version self-contained. It can later be replaced with Auto Loader, files in a Unity Catalog volume, or another source.
+There are no runnable deployment commands yet. The previous notebook example has been removed from the working tree; Git history is unchanged.
 
-## Prerequisites
+## Sample data
 
-- Access to a Databricks workspace
-- A Unity Catalog catalog where you can create a schema and tables
-- Databricks CLI configured for the workspace
-- An existing Databricks cluster
+| File | Records | Grain |
+| --- | ---: | --- |
+| `data/sample/customers.csv` | 100 | One customer |
+| `data/sample/products.csv` | 25 | One product |
+| `data/sample/orders.csv` | 1,000 | One order |
+| `data/sample/order_items.csv` | 2,561 | One order line |
 
-The SQL notebooks use named parameter markers for widgets, which require Databricks Runtime 15.2 or later.
+All records are fictional. Orders cover January–June 2026, amounts are EUR, and timestamps are UTC. The initial dataset has valid keys and no deliberately injected quality errors.
 
-## Validate and run
-
-From the repository root, replace the placeholders with values from your workspace:
+To regenerate the same files locally with Python 3 (standard library only):
 
 ```bash
-databricks bundle validate --var="cluster_id=<cluster-id>,catalog=<catalog>,schema=<schema>"
-databricks bundle deploy --var="cluster_id=<cluster-id>,catalog=<catalog>,schema=<schema>"
-databricks bundle run customer_pipeline --var="cluster_id=<cluster-id>,catalog=<catalog>,schema=<schema>"
+python3 scripts/generate_sales_data.py
 ```
 
-The default target is `dev`. Use `-t prod` only when you intentionally want to exercise the production-mode configuration.
+This overwrites the four sample CSVs deterministically. Python is only a data-generation helper; the pipeline will use SQL.
 
-## Learning roadmap
+## References
 
-Future iterations may add:
-
-- File ingestion with Auto Loader and Unity Catalog volumes
-- Incremental processing and idempotent merge patterns
-- Stronger schema and data quality expectations
-- CI checks for bundle validation and tests
-- Separate development and production identities
-- Dashboards or downstream consumption examples
-
-## Project status
-
-The initial project skeleton and a runnable learning pipeline are in place. The repository will evolve as new Databricks concepts are explored.
-
-## Disclaimer
-
-This is a personal learning and portfolio repository, not a production system.
+- [Lakeflow Spark Declarative Pipelines](https://docs.databricks.com/aws/en/ldp/)
+- [Medallion Architecture](https://docs.databricks.com/aws/en/lakehouse/medallion)

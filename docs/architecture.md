@@ -1,44 +1,35 @@
 # Architecture
 
-This project uses a deliberately small medallion architecture so that each layer has one clear responsibility.
+## Confirmed scope
 
-```text
-Inline learning data
-        |
-        v
- Bronze: bronze_customers
- Raw records and ingestion metadata
-        |
-        v
- Silver: silver_customers
- Standardized and deduplicated customer data
-        |
-        v
- Gold: gold_customer_summary
- Business-facing customer counts by country
-        |
-        v
- Automated data quality checks
-```
+- Platform: Databricks.
+- Processing framework: Lakeflow Spark Declarative Pipelines.
+- Architecture: Bronze → Silver → Gold.
+- Approach: start from scratch and build the example step by step.
+- Implementation language: SQL.
+- Scenario: synthetic retail sales with customers, products, orders, and order lines.
 
-## Layers
+## Layer responsibilities
 
-### Bronze
+| Layer | Responsibility | Output |
+| --- | --- | --- |
+| Bronze | Preserve source records with ingestion metadata | Raw datasets |
+| Silver | Clean, type, validate, and deduplicate according to source semantics | Trusted datasets |
+| Gold | Apply business logic and analytical modeling | Facts, dimensions, and aggregates as needed |
 
-The Bronze notebook creates the raw Delta table and preserves source-like values together with ingestion metadata. Inline sample records make the first version easy to run without external storage.
+The folders represent logical layers. Catalogs, schemas, dataset names, and pipeline boundaries will be selected when the source and workspace requirements are known.
 
-### Silver
+Dataset references will express dependencies in the declarative pipeline. Streaming tables and materialized views will be chosen based on source update behavior and transformation requirements.
 
-The Silver notebook trims and standardizes values, removes unusable records, and deduplicates customers by email.
+## Decisions still open
 
-### Gold
+- Batch or streaming ingestion and source update semantics.
+- Unity Catalog catalog, schemas, and source storage location.
+- Data quality rules, keys, and Gold reporting requirements.
+- Compute and deployment configuration.
 
-The Gold notebook creates a compact country-level summary suitable for reporting or dashboard experiments.
+## Current implementation
 
-## Orchestration and governance
+The folder structure and synthetic source CSVs are ready. See [data_dictionary.md](data_dictionary.md) for the source contract. There are no active pipeline definitions, deployment resources, or runtime results yet.
 
-A Databricks Workflow runs the notebooks in layer order and finishes with quality checks. Catalog and schema are deployment variables, making it possible to use separate governed locations for development and production.
-
-## Future iterations
-
-Possible next steps include Auto Loader, Unity Catalog volumes, schema expectations, incremental processing, CI validation, and environment-specific deployment.
+The previous notebook-based Job example has been removed from the working tree.
