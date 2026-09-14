@@ -5,7 +5,7 @@ resources:
       catalog: ${var.catalog}
       schema: ${var.bronze_schema}
       serverless: true
-      continuous: false
+      # Triggered mode is the default. Configure continuous execution through a Job.
       channel: CURRENT
       edition: ADVANCED
       root_path: ../src/pipelines
