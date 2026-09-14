@@ -1,6 +1,7 @@
 -- BRONZE LAYER: Raw data ingestion from CSV files
 -- Retains source records with minimal transformation. Silver handles cleansing and validation.
 -- ${sales.*} variables come from pipeline configuration (databricks.yml).
+-- test
 
 -- 1. CUSTOMERS
 CREATE OR REFRESH STREAMING TABLE `${sales.catalog}`.`${sales.bronze_schema}`.bronze_customers
